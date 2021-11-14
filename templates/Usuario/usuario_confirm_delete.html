@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block titulo %}
+    Control de tareas | Confirmar eliminacion de usuario
+{% endblock titulo %}
+
+{% block body %}
+    <form method="post">
+        {% csrf_token %}
+        <p><strong>¿Desea eliminar el registro {{ object }} ?</strong></p>
+        <button type ="submit" class="btn btn-danger">Confirmar eliminacion</button>
+    </form>
+{% endblock body %}
