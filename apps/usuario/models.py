@@ -52,7 +52,7 @@ class Usuario(AbstractBaseUser):
 
 
     def __str__(self):
-        return f'Usuario {self.nombre_usuario}, {self.apellidos}'
+        return f'Usuario {self.nombre_usuario}, {self.apellidos}
 
     def has_perm(self,perm,obj= None):
         return True
