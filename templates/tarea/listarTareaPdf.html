@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <center><h1>LISTA COMPLETA DE TAREAS ASIGNADAS</h1></center>
+    {% if tareas %}
+    <table align="center" cellspacing="8" cellpadding="8" border="1">
+        <thead>
+            <th>ID</th>
+            <th>NOMBRE TAREA</th>
+            <th>RESPONSABLE</th>
+            <th>CREACION</th>
+            <th>FECHA ENTREGA</th>
+            <th>DESCRIPCION</th>
+        </thead>
+        <tbody>
+            {%for Creartarea in tareas %}
+                <tr>
+                    <td>{{Creartarea.id}}</td>
+                    <td>{{Creartarea.nombre_tarea}}</td>
+                    <td>{{Creartarea.responsable}}</td>
+                    <td>{{Creartarea.creacion_tarea}}</td>
+                    <td>{{Creartarea.fecha_entrega}}</td>
+                    <td>{{Creartarea.descripcion}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</body>
+</html>

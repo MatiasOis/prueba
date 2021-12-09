@@ -64,25 +64,31 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{% url 'usuario:crear_usuario' %}">Crear usuario</a>
-                                    <a class="nav-link" href="{% url 'usuario:listarUsuario' %}">listar usuario</a>
+                                    <a class="nav-link" href="{% url 'usuario:listarUsuario' %}">Listar usuario</a>
                                 </nav>
                             </div>
                             {% endif %}
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                tareas
+                                Tareas
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{% url 'tarea:crear_tarea' %}">Crear tarea</a>
-                                    <a class="nav-link" href="{% url 'tarea:listarTarea' %}">listar tareas</a>
+                                    <a class="nav-link" href="{% url 'tarea:listarTarea' %}">Listar mis tareas</a>
+                                    <a class="nav-link" href="{% url 'tarea:listarFlujoTarea' %}">Listar flujos de tareas</a>
+                                    {% if request.user.is_staff %}
+                                    <a class="nav-link" href="{% url 'tarea:listarTareaAdmin' %}">Listar todas las tareas</a>
+                                    {% endif %}
                                 </nav>
                             </div>
+                            {% if request.user.usuario_diseñador %}
                             <a class="nav-link" href="{% url 'diseñador:grupo_de_tareas' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Diseñador
                             </a>
+                            {% endif %}
                             <a class="nav-link" href="charts.html">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Tablero Global
@@ -110,6 +116,11 @@
                         <div class="small">Conectado como:</div>
                         Administrador
                     </div>
+                    {% elif request.user.usuario_diseñador %}
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Conectado como:</div>
+                        Diseñador
+                    </div>
                     {% else %}
                     <div class="sb-sidenav-footer">
                         <div class="small">Conectado como:</div>
@@ -129,19 +140,28 @@
                             <div class="col-xl-6">
                                 <div class="card mb-4">
                                     <div class="card-header">
-                                        <i class="fas fa-chart-area me-1"></i>
-                                        Registro de Actividades
+                                        <i class=""></i>
+                                        Listar Usuarios
                                     </div>
-                                    <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+                                    {% if request.user.is_staff %}
+                                    <div class="card-body"> <img src="{% static "img/use.png" %}" alt="logo" width="85" weight="85" /> <button class="btn btn-info" onclick="location.href='http://127.0.0.1:8000/reportePdf/'">Reporte Pdf</button> </canvas></div>
+                                    {% else %}
+                                    <div>No tienes acceso a esta opción</div>
+                                    
+                                    {% endif %}
                                 </div>
                             </div>
                             <div class="col-xl-6">
                                 <div class="card mb-4">
                                     <div class="card-header">
                                         <i class="fas fa-chart-bar me-1"></i>
-                                        Tareas designadas
+                                        Listar Tareas
                                     </div>
-                                    <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+                                    {% if request.user.is_staff %}
+                                    <div class="card-body"> <img src="{% static "img/logo.png" %}" alt="logo" width="120" weight="120" /> <button class="btn btn-info" onclick="location.href='http://127.0.0.1:8000/tarea/listarTareaPdf/'">Reporte Pdf</button> </div>
+                                    {% else %}
+                                    <div>No tienes acceso a esta opción</div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -247,3 +267,4 @@
     </body>
     
 </html>
+

@@ -64,26 +64,32 @@
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{% url 'usuario:crear_usuario' %}">Crear usuario</a>
-                                    <a class="nav-link" href="{% url 'usuario:listarUsuario' %}">listar usuario</a>
+                                    <a class="nav-link" href="{% url 'usuario:listarUsuario' %}">Listar usuario</a>
                                 </nav>
                             </div>
                             {% endif %}
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                                tareas
+                                Tareas
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
                                     <a class="nav-link" href="{% url 'tarea:crear_tarea' %}">Crear tarea</a>
-                                    <a class="nav-link" href="{% url 'tarea:listarTarea' %}">listar tareas</a>
+                                    <a class="nav-link" href="{% url 'tarea:listarTarea' %}">Listar mis tareas</a>
+                                    <a class="nav-link" href="{% url 'tarea:listarFlujoTarea' %}">Listar flujos de tareas</a>
+                                    {% if request.user.is_staff %}
+                                    <a class="nav-link" href="{% url 'tarea:listarTareaAdmin' %}">Listar todas las tareas</a>
+                                    {% endif %}
                                 </nav>
                             </div>
+                            {% if request.user.usuario_diseñador %}
                             <a class="nav-link" href="{% url 'diseñador:grupo_de_tareas' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Diseñador
                             </a>
-                            <a class="nav-link" href="charts.html">
+                            {% endif %}
+                            <a class="nav-link" href="{% url 'tablero' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Tablero Global
                             </a>
@@ -112,6 +118,11 @@
                         <div class="small">Conectado como:</div>
                         Administrador
                     </div>
+                    {% elif request.user.usuario_diseñador %}
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Conectado como:</div>
+                        Diseñador
+                    </div>
                     {% else %}
                     <div class="sb-sidenav-footer">
                         <div class="small">Conectado como:</div>
@@ -132,37 +143,41 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <i class="fas fa-table me-1"></i>
-                            Últimas Tareas Designadas
+                            <center>ÚLTIMAS TAREAS DESIGNADAS</center>
                             {% if Creartareas %}
-                                <table BORDER CELLPADDING=10 CELLSPACING=10>
+                            <table align="center" cellspacing="10" cellpadding="10" border="1">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>nombre_tarea</th>
-                                            <th>responsable</th>
-                                            <th>creacion</th>
-                                            <th>fecha_entrega</th>
-                                            <th>descripcion</th>
-                                            <th>referencia</th>
-                                            <th>pendiente</th>
+                                            <th>Id</th>
+                                            <th>Nombre tarea</th>
+                                            <th>Responsable</th>
+                                            <th>Creacion</th>
+                                            <th>Fecha_entrega</th>
+                                            <th>Descripcion</th>
+                                            <th>Referencia</th>
+                                            <th>Pendiente</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {%for Creartarea in Creartareas%}
-                                            <tr>
-                                                <td>{{Creartarea.id}}</td>
-                                                <td>{{Creartarea.nombre_tarea}}</td>
-                                                <td>{{Creartarea.responsable}}</td>
-                                                <td>{{Creartarea.creacion_tarea}}</td>
-                                                <td>{{Creartarea.fecha_entrega}}</td>
-                                                <td>{{Creartarea.descripcion}}</td>
-                                                <td>{{Creartarea.referencia}}</td>
-                                                <td>{{Creartarea.pendiente}}</td>
-                                                <td>
-                                                    <a href="{% url 'tarea:editarTarea' Creartarea.id %}" class="btn btn-info">Editar</a>
-                                                </td>
-                                            </tr>
-
+                                            {%if user == Creartarea.responsable %}
+                                                <tr>
+                                                    <td>{{Creartarea.id}}</td>
+                                                    <td>{{Creartarea.nombre_tarea}}</td>
+                                                    <td>{{Creartarea.responsable}}</td>
+                                                    <td>{{Creartarea.creacion_tarea}}</td>
+                                                    <td>{{Creartarea.fecha_entrega}}</td>
+                                                    <td>{{Creartarea.descripcion}}</td>
+                                                    <td>{{Creartarea.referencia}}</td>
+                                                    <td>{{Creartarea.pendiente}}</td>
+                                                    <td>
+                                                        <a href="{% url 'tarea:editarTarea' Creartarea.id %}" class="btn btn-info">Editar</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="{% url 'tarea:rechazar' Creartarea.id %}" class="btn btn-danger">Rechazar tarea</a>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
                                         {% endfor %}
                                     </tbody>
                                 </table>                

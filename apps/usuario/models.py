@@ -35,8 +35,13 @@ class Usuario(AbstractBaseUser):
     correo= models.EmailField("Correo electronico ",unique = True, max_length=30)
     nombres= models.CharField("Nombres", max_length=30, blank= False, null=True)
     apellidos= models.CharField("Apellidos", max_length=30, blank= False, null=True)
+
+    # perfiles de usuario (Roles: avtivo= funcionario, admin = admin, diseñador = diseñador)
     usuario_avtivo = models.BooleanField(default=True)
     usuario_administrador = models.BooleanField(default=False)
+    usuario_diseñador = models.BooleanField(default=False)
+
+
     objects= Usuario_Manager()
     fecha_creacion= models.DateField(auto_now=True, auto_now_add=False)
     

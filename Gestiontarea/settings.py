@@ -14,6 +14,7 @@ import os
 
 from django.conf.global_settings import AUTH_USER_MODEL
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js')
@@ -130,6 +131,12 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (BASE_DIR,'static')
 
+
+EMAIL_HOST = 'smtp.googlemail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER= 'juanbantunez7@gmail.com'
+EMAIL_HOST_PASSWORD= 'antunez24.'
+EMAIL_USE_TLS= True
 
 PWA_APP_NAME = 'ControlProyecto'
 PWA_APP_DESCRIPTION = 'Control de procesos. Empresa Process SA.'

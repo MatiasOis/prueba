@@ -20,8 +20,10 @@ from django.urls import conf, path, include
 from django.contrib.auth.decorators import login_required
 from apps.tarea.views import home
 from django.conf.urls import url
-from apps.usuario.views import Login, logoutUsuario
+from apps.usuario.views import Login, logoutUsuario, tablero
 # from apps.usuario.views import listarUsuario
+from apps.usuario.views import reportePdf
+
 
 urlpatterns = [
     path('home/', login_required(home), name='index'),
@@ -32,6 +34,8 @@ urlpatterns = [
     path('accounts/login/',Login.as_view(), name='login'),
     path('logout/',login_required(logoutUsuario), name='logout'),
     path('diseñador/', include(('apps.tarea.urls', 'diseñador'))),
+    path('reportePdf/', (reportePdf.as_view()), name='reportePdf'),
+    path('tablero/', (tablero.as_view()),name='tablero' ),
     url('', include('pwa.urls'))
     
 

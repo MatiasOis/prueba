@@ -8,5 +8,6 @@
         {% csrf_token %}
         <p><strong>¿Desea eliminar el registro {{ object }} ?</strong></p>
         <button type ="submit" class="btn btn-danger">Confirmar eliminacion</button>
+        <a  href="{% url 'usuario:listarUsuario' %}" class="btn btn-info">Cancelar</a>
     </form>
 {% endblock body %}

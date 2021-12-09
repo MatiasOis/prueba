@@ -1,4 +1,6 @@
 {% load static %}
+{% load staticfiles %}
+{% load pwa %}
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -9,13 +11,13 @@
         <meta name="author" content="" />
         
         <tittle>  {% block titulo %}Inicio{% endblock titulo %}  </title>   
-        
+        {% progressive_web_app_meta %}
 
         {% block extra_css %}
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
-       
+
         {% endblock extra_css %}
 
     </head>
@@ -52,45 +54,42 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Acceso rápido</div>
-                            <a class="nav-link" href="Usuario/register.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Crear Usuarios
-                            </a>
-                            <a class="nav-link" href="roles.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Crear Roles
-                            </a>
-                            <a class="nav-link" href="uninternas.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Crear Departamentos
-                            </a>
-                            <a class="nav-link" href="tarea/creartareas.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Crear Tareas
-                            </a>
                             <div class="sb-sidenav-menu-heading">Administración General</div>
                             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Usuario
                                 <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
+                            {% if request.user.is_staff %}
                             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
                                 <nav class="sb-sidenav-menu-nested nav">
-                                    <a class="nav-link" href="register.html">Crear usuario</a>
-                                    <a class="nav-link" href="404.html">Actualizar usuario</a>
-                                    <a class="nav-link" href="404.html">Eliminar usuario</a>
+                                    <a class="nav-link" href="{% url 'usuario:crear_usuario' %}">Crear usuario</a>
+                                    <a class="nav-link" href="{% url 'usuario:listarUsuario' %}">Listar usuario</a>
                                 </nav>
                             </div>
-                            <a class="nav-link" href="tareas.html">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                                Tareas
+                            {% endif %}
+                            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts" aria-expanded="false" aria-controls="collapseLayouts">
+                                <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                                tareas
+                                <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                             </a>
-                            <a class="nav-link" href="/diseñador/grupo_de_tareas/">
+                            <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                                <nav class="sb-sidenav-menu-nested nav">
+                                    <a class="nav-link" href="{% url 'tarea:crear_tarea' %}">Crear tarea</a>
+                                    <a class="nav-link" href="{% url 'tarea:listarTarea' %}">Listarcmis tareas</a>
+                                    <a class="nav-link" href="{% url 'tarea:listarFlujoTarea' %}">Listar flujos de tareas</a>
+                                    {% if request.user.is_staff %}
+                                    <a class="nav-link" href="{% url 'tarea:listarTareaAdmin' %}">Listar todas las tareas</a>
+                                    {% endif %}
+                                </nav>
+                            </div>
+                            {% if request.user.usuario_diseñador %}
+                            <a class="nav-link" href="{% url 'diseñador:grupo_de_tareas' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Diseñador
                             </a>
-                            <a class="nav-link" href="charts.html">
+                            {% endif %}
+                            <a class="nav-link" href="{% url 'tablero' %}">
                                 <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
                                 Tablero Global
                             </a>
@@ -108,17 +107,78 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                 Cerrar sesión
                             </a>
-    
 
+                            <!-- aqui van las tablas -->
+                            
+                            
                         </div>
                     </div>
+                    {% if request.user.is_staff %}
                     <div class="sb-sidenav-footer">
                         <div class="small">Conectado como:</div>
                         Administrador
                     </div>
+                    {% elif request.user.usuario_diseñador %}
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Conectado como:</div>
+                        Diseñador
+                    </div>
+                    {% else %}
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Conectado como:</div>
+                        Funcionario
+                    </div>
+                    {% endif %}
                 </nav>
             </div>
         </div>
+                        <div class="col-xl-6">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-bar me-1"></i>
+                                    Tareas designada
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-table me-1"></i>
+                            <center> Ultimas Tareas Designadas</center>
+                            {% if Creartareas %}
+                                <table align="center" cellspacing="10" cellpadding="10" border="1">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Nombre_tarea</th>
+                                            <th>Responsable</th>
+                                            <th>Creacion</th>
+                                            <th>Fecha_entrega</th>
+                                            <th>Descripcion</th>
+                                            <th>Referencia</th>
+                                            <th>Pendiente</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {%for Creartarea in Creartareas%}
+                                                <tr>
+                                                    <td>{{Creartarea.id}}</td>
+                                                    <td>{{Creartarea.nombre_tarea}}</td>
+                                                    <td>{{Creartarea.responsable}}</td>
+                                                    <td>{{Creartarea.creacion_tarea}}</td>
+                                                    <td>{{Creartarea.fecha_entrega}}</td>
+                                                    <td>{{Creartarea.descripcion}}</td>
+                                                    <td>{{Creartarea.referencia}}</td>
+                                                    <td>{{Creartarea.pendiente}}</td>
+                                                </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>                
+                            {% else %}
+                                <h1>No existen tareas registradas</h1>
+                            {% endif %}
+                            <br/>
+                            <center><button class="btn btn-info" onclick="location.href='http://127.0.0.1:8000/tarea/listarTareaPdf/'">Reporte Pdf</button></center>
+                        </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{% static 'js/scripts.js' %}"></script> 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
@@ -134,3 +194,7 @@
     </body>
     
 </html>
+
+                            
+
+
